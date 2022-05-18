@@ -196,11 +196,15 @@ docker run \
 -e DEBIT_ACCOUNTS_DB_READ_ONLY_PORT={PORT_REPLICA} \
 ngineapps/concierge-debit-accounts
 ```
+
 >**Note:**
 You should see the log of the service with the message similar to this one:
 `Started ConciergeAccountsApplication in 9.841 seconds (JVM running for 10.596)`
 
 >**Note:**
 Use this flag **-d** for the docker run command to run the service in detach mode.
+
+Run the Keycloak:
+docker run --name keycloak --rm -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8090:8080 -v keycloak:/opt/jboss/keycloak/standalone/data jboss/keycloak:10.0.2service
 
 ***EOF***
