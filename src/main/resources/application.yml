@@ -1,6 +1,6 @@
 # Server settings
 server:
-  port: 8090
+  port: 8081
   # Enabling response compression to get a better performance for responses from service APIs
   compression:
     enabled: true
@@ -25,7 +25,7 @@ server:
 spring:
   # Service or application name
   application:
-    name: concierge-user-management-service
+    name: concierge-user-management
 
   # Adding this configuration using public-key-location with a dummy public key
   # to continue with tests, we must check OAuth part to do this
