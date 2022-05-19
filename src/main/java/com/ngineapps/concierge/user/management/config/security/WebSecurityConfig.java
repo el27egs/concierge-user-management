@@ -24,7 +24,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
@@ -107,9 +107,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloackRoleConverter());
 
 		http.authorizeRequests(authorize -> authorize.mvcMatchers("/api/v1/locations").permitAll()
-				.mvcMatchers(HttpMethod.GET, "/api/v1/access/token").hasAuthority("ROLE_concierge-user-token"))
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf()
-				.disable().oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
+				.mvcMatchers(HttpMethod.GET, "/api/v1/access/token").hasAuthority("ROLE_concierge-user-token")
+				.anyRequest().authenticated()).sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf().disable()
+				.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter);
 
 		/*
 		 * Option 2 using custom converter without PreAuthorize, using Web Security

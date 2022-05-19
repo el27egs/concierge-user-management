@@ -19,11 +19,10 @@ import java.util.Collections;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/access")
@@ -53,5 +52,23 @@ public class AccessTokenController {
 		headers.add("Content-Type", "application/json");
 
 		return ResponseEntity.ok().headers(headers).body(Collections.singletonMap("principal", jwt));
+	}
+
+	/*
+	 * Method security at level method, no required checking roles or authorities on
+	 * WebSecurityConfig We can use @Secured in controller or service classes.
+	 */
+	/*
+	 * PreAuthorize annotation support method expression but Secured annotation no.
+	 */
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('concierge-user-token') or #id == #jwt.subject")
+	// @Secured("ROLE_concierge-user-token")
+	public ResponseEntity<String> delete(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+
+		return ResponseEntity.ok().headers(headers).body("Id " + id + " and JWT subject = " + jwt.getSubject());
 	}
 }
