@@ -17,11 +17,17 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
 				<constraints
 						uniqueConstraintName="unique_suites_name" />
 			</column>
-			<column name="user_id" type="int">
+			<column name="user_id" type="varchar(36)">
 				<constraints nullable="false"
 							 foreignKeyName="fk_user"
 							 referencedTableName="users"
 							 referencedColumnNames="user_id" />
+			</column>
+			<column name="location_id" type="int">
+				<constraints nullable="false"
+							 foreignKeyName="fk_location"
+							 referencedTableName="locations"
+							 referencedColumnNames="location_id" />
 			</column>
 
 		</createTable>

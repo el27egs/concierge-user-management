@@ -14,7 +14,7 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
 					primaryKeyName="pk_users_locations" nullable="false" />
 			</column>
 
-			<column name="user_id" type="int">
+			<column name="user_id" type="varchar(36)">
 				<constraints nullable="false"
 							 foreignKeyName="fk_user"
 							 referencedTableName="users"
