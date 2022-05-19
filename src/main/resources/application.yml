@@ -33,7 +33,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          public-key-location: classpath:id_rsa.pub
+          issuer-uri: http://localhost:8090/auth/realms/concierge
 
   # Setting to create a distributed trace id for calls between services
   sleuth:
