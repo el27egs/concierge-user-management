@@ -29,13 +29,13 @@ For localhost, the recommendation is to create following components:
 Execute in localhost following command:
 ```sh
 docker network create concierge
-docker run -d --name postgres-db-master -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=concierge-user-management -p 5432:5432 --net concierge postgres:14-alpine
+docker run -d --name postgres-db-onlymaster -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 --net concierge postgres:14-alpine
 ```
-The Debit Account Service will requirer following arguments configured in your IDE:
+The Debit Account Service will require following arguments configured in your IDE:
 ```sh
 -DDEBIT_ACCOUNTS_DB_USER=postgres
 -DDEBIT_ACCOUNTS_DB_PASSWORD=postgres
--DDEBIT_ACCOUNTS_DB_NAME=concierge-debit-accounts
+-DDEBIT_ACCOUNTS_DB_NAME=postgres
 -DDEBIT_ACCOUNTS_DB_READ_WRITE_HOST=localhost
 -DDEBIT_ACCOUNTS_DB_READ_WRITE_PORT=5432
 -DDEBIT_ACCOUNTS_DB_READ_ONLY_HOST=localhost
@@ -204,7 +204,9 @@ You should see the log of the service with the message similar to this one:
 >**Note:**
 Use this flag **-d** for the docker run command to run the service in detach mode.
 
-Run the Keycloak:
+Run Identity and Access Management Server (Keycloak):
+```sh
 docker run --name keycloak --rm -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8090:8080 -v keycloak:/opt/jboss/keycloak/standalone/data jboss/keycloak:10.0.2service
+```
 
 ***EOF***
