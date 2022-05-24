@@ -18,12 +18,11 @@ package com.ngineapps.concierge.user.management.exceptions;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.Data;
-import org.springframework.http.HttpStatus;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 @Data
 @JsonInclude(Include.NON_NULL)

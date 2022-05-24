@@ -29,59 +29,59 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 @Slf4j
 public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-	@Override
-	public AbstractAuthenticationToken convert(@Nullable Jwt jwt) {
+  @Override
+  public AbstractAuthenticationToken convert(@Nullable Jwt jwt) {
 
-		if (Objects.isNull(jwt)) {
-			log.error("JWT argument is NULL");
-			throw new IllegalArgumentException("JWT cannot be NULL");
-		}
+    if (Objects.isNull(jwt)) {
+      log.error("JWT argument is NULL");
+      throw new IllegalArgumentException("JWT cannot be NULL");
+    }
 
-		log.info("Using new CustomConverter...");
+    log.info("Using new CustomConverter...");
 
-		Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
+    Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
 
-		return new JwtAuthenticationToken(jwt, authorities);
-	}
+    return new JwtAuthenticationToken(jwt, authorities);
+  }
 
-	public Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
+  public Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
 
-		Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+    Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-		grantedAuthorities.addAll(getRoles(jwt));
-		grantedAuthorities.addAll(getScopes(jwt));
+    grantedAuthorities.addAll(getRoles(jwt));
+    grantedAuthorities.addAll(getScopes(jwt));
 
-		return grantedAuthorities;
-	}
+    return grantedAuthorities;
+  }
 
-	public List<SimpleGrantedAuthority> getRoles(Jwt jwt) {
+  public List<SimpleGrantedAuthority> getRoles(Jwt jwt) {
 
-		Map<String, Object> realmAccess = (Map<String, Object>) jwt.getClaims().get("realm_access");
+    Map<String, Object> realmAccess = (Map<String, Object>) jwt.getClaims().get("realm_access");
 
-		if (realmAccess == null || realmAccess.isEmpty()) {
-			log.error("JWT does not contains realm_access claim");
-			return new ArrayList<>();
-		}
+    if (realmAccess == null || realmAccess.isEmpty()) {
+      log.error("JWT does not contains realm_access claim");
+      return new ArrayList<>();
+    }
 
-		return ((List<String>) realmAccess.get("roles"))
-				.stream()
-				.map(roleName -> "ROLE_" + roleName)
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
-	}
+    return ((List<String>) realmAccess.get("roles"))
+        .stream()
+            .map(roleName -> "ROLE_" + roleName)
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+  }
 
-	public List<SimpleGrantedAuthority> getScopes(Jwt jwt) {
+  public List<SimpleGrantedAuthority> getScopes(Jwt jwt) {
 
-		String scopes = (String) jwt.getClaims().get("scope");
+    String scopes = (String) jwt.getClaims().get("scope");
 
-		if (scopes == null || scopes.isEmpty()) {
-			log.error("JWT does not contains scope claim");
-			return Collections.emptyList();
-		}
+    if (scopes == null || scopes.isEmpty()) {
+      log.error("JWT does not contains scope claim");
+      return Collections.emptyList();
+    }
 
-		return Arrays.stream(scopes.split("\\s+"))
-				.map(roleName -> "SCOPE_" + roleName)
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
-	}
+    return Arrays.stream(scopes.split("\\s+"))
+        .map(roleName -> "SCOPE_" + roleName)
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+  }
 }

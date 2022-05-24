@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class ConciergeUserManagementApplication {
 
-	public static void main(final String[] args) {
-		SpringApplication.run(ConciergeUserManagementApplication.class, args);
-	}
+  public static void main(final String[] args) {
+    SpringApplication.run(ConciergeUserManagementApplication.class, args);
+  }
 }

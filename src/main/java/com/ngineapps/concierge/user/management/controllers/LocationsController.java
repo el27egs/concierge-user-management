@@ -25,12 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/locations")
 public class LocationsController {
 
-	@GetMapping()
-	public ResponseEntity<String> hello() {
+  @GetMapping()
+  public ResponseEntity<String> hello() {
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-Type", "application/json");
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
 
-		return ResponseEntity.ok().headers(headers).body("Response with header using ResponseEntity");
-	}
+    return ResponseEntity.ok().headers(headers).body("Response with header using ResponseEntity");
+  }
 }

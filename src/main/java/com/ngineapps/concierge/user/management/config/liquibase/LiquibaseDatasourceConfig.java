@@ -26,34 +26,35 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LiquibaseDatasourceConfig {
 
-	private final DataSource routingDataSource;
+  private final DataSource routingDataSource;
 
-	public LiquibaseDatasourceConfig(@Qualifier("routingDataSource") DataSource routingDataSource) {
-		this.routingDataSource = routingDataSource;
-	}
+  public LiquibaseDatasourceConfig(@Qualifier("routingDataSource") DataSource routingDataSource) {
+    this.routingDataSource = routingDataSource;
+  }
 
-	@Bean
-	@ConfigurationProperties(prefix = "spring.liquibase")
-	public LiquibaseProperties primaryLiquibaseProperties() {
-		return new LiquibaseProperties();
-	}
+  @Bean
+  @ConfigurationProperties(prefix = "spring.liquibase")
+  public LiquibaseProperties primaryLiquibaseProperties() {
+    return new LiquibaseProperties();
+  }
 
-	@Bean
-	public SpringLiquibase primaryLiquibase() {
-		return springLiquibase(this.routingDataSource, primaryLiquibaseProperties());
-	}
+  @Bean
+  public SpringLiquibase primaryLiquibase() {
+    return springLiquibase(this.routingDataSource, primaryLiquibaseProperties());
+  }
 
-	private static SpringLiquibase springLiquibase(DataSource dataSource, LiquibaseProperties properties) {
-		SpringLiquibase liquibase = new SpringLiquibase();
-		liquibase.setDataSource(dataSource);
-		liquibase.setChangeLog(properties.getChangeLog());
-		liquibase.setContexts(properties.getContexts());
-		liquibase.setDefaultSchema(properties.getDefaultSchema());
-		liquibase.setDropFirst(properties.isDropFirst());
-		liquibase.setShouldRun(properties.isEnabled());
-		liquibase.setLabels(properties.getLabels());
-		liquibase.setChangeLogParameters(properties.getParameters());
-		liquibase.setRollbackFile(properties.getRollbackFile());
-		return liquibase;
-	}
+  private static SpringLiquibase springLiquibase(
+      DataSource dataSource, LiquibaseProperties properties) {
+    SpringLiquibase liquibase = new SpringLiquibase();
+    liquibase.setDataSource(dataSource);
+    liquibase.setChangeLog(properties.getChangeLog());
+    liquibase.setContexts(properties.getContexts());
+    liquibase.setDefaultSchema(properties.getDefaultSchema());
+    liquibase.setDropFirst(properties.isDropFirst());
+    liquibase.setShouldRun(properties.isEnabled());
+    liquibase.setLabels(properties.getLabels());
+    liquibase.setChangeLogParameters(properties.getParameters());
+    liquibase.setRollbackFile(properties.getRollbackFile());
+    return liquibase;
+  }
 }

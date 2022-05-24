@@ -25,25 +25,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 public class UsersController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UsersController(UserService userService) {
-        this.userService = userService;
-    }
+  public UsersController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String userId) {
-        return ResponseEntity.ok().body(UserResponseDTO.builder().id(userId).build());
-    }
+  @GetMapping("/{userId}")
+  public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String userId) {
+    return ResponseEntity.ok().body(UserResponseDTO.builder().id(userId).build());
+  }
 
-    @GetMapping("/{userId}/accounts/{accountId}/validate")
-    public ResponseEntity<UserAccountValidationDTO> validateUserIsAccountOwner(@PathVariable int userId,
-                                                                              @PathVariable String accountId){
+  @GetMapping("/{userId}/accounts/{accountId}/validate")
+  public ResponseEntity<UserAccountValidationDTO> validateUserIsAccountOwner(
+      @PathVariable int userId, @PathVariable String accountId) {
 
-        UserAccountValidationDTO responseDto = userService.validateUserIsAccountOwner(userId,accountId);
+    UserAccountValidationDTO responseDto =
+        userService.validateUserIsAccountOwner(userId, accountId);
 
-        return ResponseEntity.ok().body(responseDto);
-
-    }
-
+    return ResponseEntity.ok().body(responseDto);
+  }
 }

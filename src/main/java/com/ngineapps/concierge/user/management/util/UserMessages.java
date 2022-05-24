@@ -18,7 +18,6 @@ package com.ngineapps.concierge.user.management.util;
 public class UserMessages {
 
   public static final String USER_IS_NOT_ACCOUNT_OWNER =
-      "No se pudo validar la pertenencia de la cuenta al usuario con la información proporcioanda" +
-              "Favor de revisar los datos nuevamente.";
-
+      "No se pudo validar la pertenencia de la cuenta al usuario con la información proporcioanda"
+          + "Favor de revisar los datos nuevamente.";
 }

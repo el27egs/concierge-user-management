@@ -16,5 +16,6 @@
 package com.ngineapps.concierge.user.management.config.datasource;
 
 public enum DataSourceType {
-	READ_WRITE, READ_ONLY
+  READ_WRITE,
+  READ_ONLY
 }
