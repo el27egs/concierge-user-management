@@ -17,11 +17,6 @@ package com.ngineapps.concierge.user.management.config.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,88 +29,110 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 @ComponentScan(basePackages = "com.ngineapps.concierge.user.management")
 public class TransactionRoutingConfiguration {
 
-	@Value("${app.datasource.readWrite.url}")
-	private String primaryUrl;
+    public static final String DATASOURCE_ID = "routingDataSource";
+    private static final String UNIT_NAME = "concierge_user_management";
+    private static final String PACKAGE_MODEL_CLASSES = "com.ngineapps.concierge.user.management.model";
+    @Value("${app.datasource.readWrite.url}:jdbc:postgresql://localhost:5432/postgres")
+    private String primaryUrl;
 
-	@Value("${app.datasource.username}")
-	private String username;
+    @Value("${app.datasource.readWrite.maxPoolSize: 10}")
+    private int primaryMaxPoolSize;
 
-	@Value("${app.datasource.password}")
-	private String password;
+    @Value("${app.datasource.username:postgres}")
+    private String username;
 
-	@Value("${app.datasource.readOnly.url}")
-	private String replicaUrl;
+    @Value("${app.datasource.password: postgres}")
+    private String password;
 
-	@Bean
-	public DataSource readWriteDataSource() {
-		PGSimpleDataSource dataSource = new PGSimpleDataSource();
-		dataSource.setURL(primaryUrl);
-		dataSource.setUser(username);
-		dataSource.setPassword(password);
-		return connectionPoolDataSource(dataSource, "Hikary-readWrite-pool");
-	}
+    @Value("${app.datasource.readOnly.url: jdbc:postgresql://localhost:5432/postgres}")
+    private String replicaUrl;
 
-	@Bean
-	public DataSource readOnlyDataSource() {
-		PGSimpleDataSource dataSource = new PGSimpleDataSource();
-		dataSource.setURL(replicaUrl);
-		dataSource.setUser(username);
-		dataSource.setPassword(password);
-		return connectionPoolDataSource(dataSource, "Hikary-readOnly-pool");
-	}
+    @Value("${app.datasource.readOnly.maxPoolSize: 10}")
+    private int replicaMaxPoolSize;
 
-	@Primary
-	@Bean(name = "routingDataSource")
-	public TransactionRoutingDataSource actualDataSource() {
 
-		TransactionRoutingDataSource routingDataSource = new TransactionRoutingDataSource();
+    @Bean
+    public DataSource readWriteDataSource() {
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL(primaryUrl);
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
+        return connectionPoolDataSource(dataSource, "readWrite-pool", primaryMaxPoolSize);
+    }
 
-		Map<Object, Object> dataSourceMap = new HashMap<>();
-		dataSourceMap.put(DataSourceType.READ_WRITE, readWriteDataSource());
-		dataSourceMap.put(DataSourceType.READ_ONLY, readOnlyDataSource());
+    @Bean
+    public DataSource readOnlyDataSource() {
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL(replicaUrl);
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
+        return connectionPoolDataSource(dataSource, "readOnly-pool", replicaMaxPoolSize);
+    }
 
-		routingDataSource.setTargetDataSources(dataSourceMap);
+    @Primary
+    @Bean(name = "routingDataSource")
+    public TransactionRoutingDataSource actualDataSource() {
 
-		return routingDataSource;
-	}
+        TransactionRoutingDataSource routingDataSource = new TransactionRoutingDataSource();
 
-	protected HikariConfig hikariConfig(DataSource dataSource, String poolName) {
+        Map<Object, Object> dataSourceMap = new HashMap<>();
+        dataSourceMap.put(DataSourceType.READ_WRITE, readWriteDataSource());
+        dataSourceMap.put(DataSourceType.READ_ONLY, readOnlyDataSource());
 
-		HikariConfig hikariConfig = new HikariConfig();
+        routingDataSource.setTargetDataSources(dataSourceMap);
 
-		int cpuCores = Runtime.getRuntime().availableProcessors();
-		hikariConfig.setPoolName(poolName);
-		hikariConfig.setMaximumPoolSize(cpuCores * 4);
-		hikariConfig.setDataSource(dataSource);
-		hikariConfig.setAutoCommit(false);
+        return routingDataSource;
+    }
 
-		return hikariConfig;
-	}
+    protected HikariConfig hikariConfig(DataSource dataSource, String poolName, int maxPoolSize) {
 
-	protected HikariDataSource connectionPoolDataSource(DataSource dataSource, String poolName) {
-		return new HikariDataSource(hikariConfig(dataSource, poolName));
-	}
+        HikariConfig hikariConfig = new HikariConfig();
 
-	@Bean
-	@PersistenceContext(unitName = "concierge_user_management")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-			@Qualifier("routingDataSource") DataSource routingDataSource) {
+        int cpuCores = Runtime.getRuntime().availableProcessors();
+        hikariConfig.setPoolName(poolName);
+        /*
+         * TODO Verify percentage of connections between readonly and readwrite
+         * This configuration is creating same number of connections for both types per application instance
+         * Verify how to manage a cluster for readonly instances to assign 100% connections as readonly
+         */
+        hikariConfig.setMaximumPoolSize(maxPoolSize);
+        hikariConfig.setDataSource(dataSource);
+        hikariConfig.setAutoCommit(false);
 
-		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-		entityManagerFactory.setPersistenceUnitName("concierge_user_management");
-		entityManagerFactory.setPackagesToScan("com.ngineapps.concierge.user.management.model");
-		entityManagerFactory.setDataSource(routingDataSource);
-		entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-		entityManagerFactory.afterPropertiesSet();
-		return entityManagerFactory;
-	}
+        return hikariConfig;
+    }
 
-	@Bean
-	public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-		return new JpaTransactionManager(entityManagerFactory);
-	}
+    protected HikariDataSource connectionPoolDataSource(DataSource dataSource, String poolName, int maxPoolSize) {
+        return new HikariDataSource(hikariConfig(dataSource, poolName, maxPoolSize));
+    }
+
+    @Bean
+    @PersistenceContext(unitName = UNIT_NAME)
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            @Qualifier(DATASOURCE_ID) DataSource routingDataSource) {
+
+        LocalContainerEntityManagerFactoryBean entityManagerFactory =
+                new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setPersistenceUnitName(UNIT_NAME);
+        entityManagerFactory.setPackagesToScan(PACKAGE_MODEL_CLASSES);
+        entityManagerFactory.setDataSource(routingDataSource);
+        entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactory.afterPropertiesSet();
+        return entityManagerFactory;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
+    }
 }

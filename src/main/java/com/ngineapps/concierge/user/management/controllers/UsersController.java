@@ -15,10 +15,35 @@
  */
 package com.ngineapps.concierge.user.management.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ngineapps.concierge.user.management.dto.UserAccountValidationDTO;
+import com.ngineapps.concierge.user.management.dto.UserResponseDTO;
+import com.ngineapps.concierge.user.management.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/users")
 public class UsersController {
+
+    private final UserService userService;
+
+    public UsersController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String userId) {
+        return ResponseEntity.ok().body(UserResponseDTO.builder().id(userId).build());
+    }
+
+    @GetMapping("/{userId}/accounts/{accountId}/validate")
+    public ResponseEntity<UserAccountValidationDTO> validateUserIsAccountOwner(@PathVariable int userId,
+                                                                              @PathVariable String accountId){
+
+        UserAccountValidationDTO responseDto = userService.validateUserIsAccountOwner(userId,accountId);
+
+        return ResponseEntity.ok().body(responseDto);
+
+    }
+
 }

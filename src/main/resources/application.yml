@@ -33,7 +33,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
+          #issuer-uri: https://dev-54381958.okta.com/oauth2/default
           issuer-uri: http://localhost:8090/auth/realms/concierge
+          #issuer-uri: https://accounts.google.com
 
   # Setting to create a distributed trace id for calls between services
   sleuth:
@@ -87,9 +89,10 @@ app:
     password: ${USER_MANAGEMENT_DB_PASSWORD:postgres}
     readWrite:
       url: jdbc:postgresql://${USER_MANAGEMENT_DB_READ_WRITE_HOST:35.224.95.119}:${USER_MANAGEMENT_DB_READ_WRITE_PORT:5432}/${USER_MANAGEMENT_DB_NAME:concierge-user-management}?useUnicode=yes&characterEncoding=UTF-8&createDatabaseIfNotExist=true
+      maxPoolSize: 2
     readOnly:
       url: jdbc:postgresql://${USER_MANAGEMENT_DB_READ_ONLY_HOST:34.133.146.4}:${USER_MANAGEMENT_DB_READ_ONLY_PORT:5432}/${USER_MANAGEMENT_DB_NAME:concierge-user-management}?useUnicode=yes&characterEncoding=UTF-8&createDatabaseIfNotExist=true
-
+      maxPoolSize: 2
   info:
     website: https://ngineapps.com
     name: @project.artifactId@

@@ -17,7 +17,12 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
 				<constraints
 						uniqueConstraintName="unique_suites_name" />
 			</column>
-			<column name="user_id" type="varchar(36)">
+			<column name="account_id" type="varchar(36)" >
+				<constraints
+						uniqueConstraintName="unique_account_id" nullable="true" />
+			</column>
+			<column name="enabled" type="boolean" />
+			<column name="user_id" type="int">
 				<constraints nullable="false"
 							 foreignKeyName="fk_user"
 							 referencedTableName="users"

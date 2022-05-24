@@ -7,10 +7,10 @@
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
 http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd">
 
-	<include file="/db/changelog/users.xml"
+	<include file="/db/changelog/locations.xml"
 			 relativeToChangelogFile="false" />
 
-	<include file="/db/changelog/locations.xml"
+	<include file="/db/changelog/users.xml"
 			 relativeToChangelogFile="false" />
 
 	<include file="/db/changelog/users_locations.xml"
@@ -19,10 +19,10 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
 	<include file="/db/changelog/managements.xml"
 			 relativeToChangelogFile="false" />
 
-	<include file="/db/changelog/data_users.xml"
+	<include file="/db/changelog/data_locations.xml"
 			 relativeToChangelogFile="false" />
 
-	<include file="/db/changelog/data_locations.xml"
+	<include file="/db/changelog/data_users.xml"
 			 relativeToChangelogFile="false" />
 
 	<include file="/db/changelog/data_users_locations.xml"
