@@ -17,6 +17,7 @@ package com.ngineapps.concierge.user.management.service;
 
 import com.ngineapps.concierge.user.management.dto.UserAccountValidationDTO;
 import com.ngineapps.concierge.user.management.exceptions.ClientBusinessLogicException;
+import com.ngineapps.concierge.user.management.exceptions.DataNotFoundException;
 import com.ngineapps.concierge.user.management.model.User;
 import com.ngineapps.concierge.user.management.repositories.UserRepository;
 import com.ngineapps.concierge.user.management.util.UserMessages;
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository
             .findUserByUserIdAndAccountId(userId, accountId)
             .orElseThrow(
-                () -> new ClientBusinessLogicException(UserMessages.USER_IS_NOT_ACCOUNT_OWNER));
+                () -> new DataNotFoundException(UserMessages.USER_IS_NOT_ACCOUNT_OWNER));
 
     UserAccountValidationDTO dto =
         UserAccountValidationDTO.builder()
