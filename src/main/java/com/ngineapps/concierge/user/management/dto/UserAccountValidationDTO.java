@@ -34,5 +34,5 @@ public class UserAccountValidationDTO implements Serializable {
 
   private int userId;
   private String accountId;
-  private boolean isUserOwnerAccount;
+  private boolean isOwnerOfAccount;
 }

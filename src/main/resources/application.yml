@@ -1,6 +1,6 @@
 # Server settings
 server:
-  port: 8081
+  port: 0
   # Enabling response compression to get a better performance for responses from service APIs
   compression:
     enabled: true
@@ -97,3 +97,12 @@ app:
     website: https://ngineapps.com
     name: @project.artifactId@
     version: @project.version@
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8018/eureka/
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${instanceId:${random.value}}
+    #mvn spring-boot:run -Dspring-boot.run.arguments=--instanceId=john

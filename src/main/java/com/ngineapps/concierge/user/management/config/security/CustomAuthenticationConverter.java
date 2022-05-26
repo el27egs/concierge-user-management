@@ -37,8 +37,6 @@ public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAut
       throw new IllegalArgumentException("JWT cannot be NULL");
     }
 
-    log.info("Using new CustomConverter...");
-
     Collection<GrantedAuthority> authorities = extractAuthorities(jwt);
 
     return new JwtAuthenticationToken(jwt, authorities);

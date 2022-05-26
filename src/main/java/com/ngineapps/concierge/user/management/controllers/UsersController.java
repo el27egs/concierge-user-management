@@ -18,9 +18,14 @@ package com.ngineapps.concierge.user.management.controllers;
 import com.ngineapps.concierge.user.management.dto.UserAccountValidationDTO;
 import com.ngineapps.concierge.user.management.dto.UserResponseDTO;
 import com.ngineapps.concierge.user.management.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/users")
 public class UsersController {
@@ -40,8 +45,19 @@ public class UsersController {
   public ResponseEntity<UserAccountValidationDTO> validateUserIsAccountOwner(
       @PathVariable int userId, @PathVariable String accountId) {
 
+    log.info(
+        "Receiving a request to validate if user with Id: {} is owner of account: {}",
+        userId,
+        accountId);
+
     UserAccountValidationDTO responseDto =
         userService.validateUserIsAccountOwner(userId, accountId);
+
+    log.info(
+        "Response of validation user with Id: {} IS{}owner of the account: {}",
+        userId,
+        (responseDto.isOwnerOfAccount() ? "" : " NOT "),
+        accountId);
 
     return ResponseEntity.ok().body(responseDto);
   }
