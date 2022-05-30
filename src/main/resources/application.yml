@@ -103,7 +103,8 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8018/eureka/
   instance:
-    hostname: localhost
+    #hostname: localhost
+    prefer-ip-address: true
     instance-id: ${spring.application.name}:${instanceId:${random.value}}
     #mvn spring-boot:run -Dspring-boot.run.arguments=--instanceId=john
 
@@ -111,12 +112,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,prometheus
   endpoint:
     health:
       show-components: always
+      show-details: always
       probes:
         enabled: true
+    metrics:
+      enabled: true
 
 info:
   application:
@@ -125,3 +129,7 @@ info:
     artifact: '@project.artifactId@'
     version: '@project.version@'
     spring-cloud-version: '@spring-cloud.version@'
+
+runtime:
+  context:
+    environment: local

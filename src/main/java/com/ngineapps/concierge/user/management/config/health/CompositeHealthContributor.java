@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ngineapps.concierge.user.management.config.metrics;
+package com.ngineapps.concierge.user.management.config.health;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -23,7 +23,7 @@ import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.stereotype.Component;
 
-@Component("cconcierge-user-management-api")
+@Component("concierge-user-management-api")
 public class CompositeHealthContributor
     implements org.springframework.boot.actuate.health.CompositeHealthContributor {
 

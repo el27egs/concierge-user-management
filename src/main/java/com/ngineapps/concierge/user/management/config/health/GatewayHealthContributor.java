@@ -13,37 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ngineapps.concierge.user.management.config.metrics;
+package com.ngineapps.concierge.user.management.config.health;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import java.net.Socket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-@Component("concierge-user-management-db")
+@Component("concierge-user-management-gateway")
 @Slf4j
-public class DatabaseHealthContributor implements HealthIndicator, HealthContributor {
+public class GatewayHealthContributor implements HealthIndicator, HealthContributor {
 
-  private final DataSource dataSource;
+  private final RestTemplate restTemplate;
 
-  public DatabaseHealthContributor(@Qualifier("routingDataSource") DataSource dataSource) {
-    this.dataSource = dataSource;
+  @Value("${app.urls.api-gateway}")
+  private String apiGatewayUrl;
+
+  public GatewayHealthContributor(@Qualifier("internalWebClient") RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
   }
 
   @Override
   public Health health() {
-    try (Connection conn = dataSource.getConnection()) {
-      Statement stmt = conn.createStatement();
-      stmt.execute("SELECT 1");
-    } catch (SQLException ex) {
-      log.warn("Failed to connect to database");
-      return Health.outOfService().withException(ex).build();
+    try (Socket socket = new Socket(new java.net.URL(apiGatewayUrl).getHost(), 8008)) {
+    } catch (Exception e) {
+      log.warn("Failed to connect to: {}", apiGatewayUrl);
+      return Health.down().withDetail("error", e.getMessage()).build();
     }
     return Health.up().build();
   }
