@@ -94,6 +94,10 @@ app:
       url: jdbc:postgresql://${USER_MANAGEMENT_DB_READ_ONLY_HOST:34.133.146.4}:${USER_MANAGEMENT_DB_READ_ONLY_PORT:5432}/${USER_MANAGEMENT_DB_NAME:concierge-user-management}?useUnicode=yes&characterEncoding=UTF-8&createDatabaseIfNotExist=true
       maxPoolSize: 2
 
+  urls:
+    api-gateway: http://localhost:8008
+
+
 eureka:
   client:
     serviceUrl:
