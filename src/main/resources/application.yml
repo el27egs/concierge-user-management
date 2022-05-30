@@ -93,10 +93,6 @@ app:
     readOnly:
       url: jdbc:postgresql://${USER_MANAGEMENT_DB_READ_ONLY_HOST:34.133.146.4}:${USER_MANAGEMENT_DB_READ_ONLY_PORT:5432}/${USER_MANAGEMENT_DB_NAME:concierge-user-management}?useUnicode=yes&characterEncoding=UTF-8&createDatabaseIfNotExist=true
       maxPoolSize: 2
-  info:
-    website: https://ngineapps.com
-    name: @project.artifactId@
-    version: @project.version@
 
 eureka:
   client:
@@ -106,3 +102,22 @@ eureka:
     hostname: localhost
     instance-id: ${spring.application.name}:${instanceId:${random.value}}
     #mvn spring-boot:run -Dspring-boot.run.arguments=--instanceId=john
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-components: always
+      probes:
+        enabled: true
+
+info:
+  application:
+    name: '@project.artifactId@'
+    description: '@project.description@'
+    artifact: '@project.artifactId@'
+    version: '@project.version@'
+    spring-cloud-version: '@spring-cloud.version@'

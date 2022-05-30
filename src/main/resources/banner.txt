@@ -4,5 +4,5 @@
  | |_| | \__ \ |  __/ | |      | |  | | | (_| | | | | | | (_| | | (_| | |  __/ | | | | | | |  __/ | | | | | |_
   \___/  |___/  \___| |_|      |_|  |_|  \__,_| |_| |_|  \__,_|  \__, |  \___| |_| |_| |_|  \___| |_| |_|  \__|
                                                                  |___/
-${application.title} ${application.version}
+${info.application.name}-${info.application.version}
 Powered by Spring Boot ${spring-boot.version}

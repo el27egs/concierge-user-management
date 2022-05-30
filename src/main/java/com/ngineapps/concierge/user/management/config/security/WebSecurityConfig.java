@@ -26,31 +26,32 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 // @EnableWebSecurity  // @Configuration is ok, this one throws an exception, do not use it
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests(
-            authorize ->
-                authorize
-                    .mvcMatchers("/api/v1/users/**")
-                    .authenticated()
-                    .mvcMatchers("/api/v1/locations/**")
-                    .authenticated()
-                    .anyRequest()
-                    .authenticated())
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .cors()
-        .and()
-        .csrf()
-        .disable()
-        .oauth2ResourceServer(
-            oauth2 ->
-                oauth2.jwt(
-                    jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter())))
-        .headers()
-        .xssProtection()
-        .and()
-        .contentSecurityPolicy("script-src 'self'");
-  }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests(
+                        authorize ->
+                                authorize
+                                        .mvcMatchers("/actuator/**").permitAll()
+                                        .mvcMatchers("/api/v1/users/**")
+                                        .authenticated()
+                                        .mvcMatchers("/api/v1/locations/**")
+                                        .authenticated()
+                                        .anyRequest()
+                                        .authenticated())
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .oauth2ResourceServer(
+                        oauth2 ->
+                                oauth2.jwt(
+                                        jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter())))
+                .headers()
+                .xssProtection()
+                .and()
+                .contentSecurityPolicy("script-src 'self'");
+    }
 }
