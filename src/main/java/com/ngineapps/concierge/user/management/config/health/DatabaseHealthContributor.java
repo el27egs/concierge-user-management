@@ -26,7 +26,7 @@ import org.springframework.boot.actuate.health.HealthContributor;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
-@Component("concierge-user-managementdb")
+@Component("concierge-user-management-db")
 @Slf4j
 public class DatabaseHealthContributor implements HealthIndicator, HealthContributor {
 

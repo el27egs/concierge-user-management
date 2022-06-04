@@ -34,7 +34,7 @@ spring:
       resourceserver:
         jwt:
           #issuer-uri: https://dev-54381958.okta.com/oauth2/default
-          issuer-uri: http://localhost:8090/auth/realms/concierge
+          issuer-uri: ${ISSUER_URI:http://localhost:8090/auth/realms/concierge}
           #issuer-uri: https://accounts.google.com
 
   # Setting to create a distributed trace id for calls between services
@@ -95,13 +95,13 @@ app:
       maxPoolSize: 2
 
   urls:
-    api-gateway: http://localhost:8008
+    api-gateway: ${GATEWAY_URL:http://localhost:8008}
 
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8018/eureka/
+      defaultZone: ${DISCOVERY_ENDPOINT:http://localhost:8018/eureka/}
   instance:
     #hostname: localhost
     prefer-ip-address: true

@@ -19,7 +19,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.health.HealthContributor;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.NamedContributor;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +33,8 @@ public class CompositeHealthContributor
 
   @Autowired
   public CompositeHealthContributor(
-      DatabaseHealthContributor databaseHealthContributor,
-      GatewayHealthContributor gatewayHealthContributor) {
+      @Qualifier("concierge-user-management-db") HealthIndicator databaseHealthContributor,
+      @Qualifier("concierge-user-management-gateway") HealthIndicator gatewayHealthContributor) {
 
     contributors.put("concierge-user-management-gateway", gatewayHealthContributor);
 

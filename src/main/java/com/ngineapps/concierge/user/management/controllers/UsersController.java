@@ -45,18 +45,15 @@ public class UsersController {
   public ResponseEntity<UserAccountValidationDTO> validateUserIsAccountOwner(
       @PathVariable int userId, @PathVariable String accountId) {
 
-    log.info(
-        "Receiving a request to validate if user with Id: {} is owner of account: {}",
-        userId,
-        accountId);
+    log.info("Validating if user with id: {} is owner of account: {}", userId, accountId);
 
     UserAccountValidationDTO responseDto =
         userService.validateUserIsAccountOwner(userId, accountId);
 
     log.info(
-        "Response of validation user with Id: {} IS{}owner of the account: {}",
+        "User with id: {} {} owner of the account: {}",
         userId,
-        (responseDto.isOwnerOfAccount() ? "" : " NOT "),
+        (responseDto.isOwnerOfAccount() ? "IS" : "IS NOT"),
         accountId);
 
     return ResponseEntity.ok().body(responseDto);
