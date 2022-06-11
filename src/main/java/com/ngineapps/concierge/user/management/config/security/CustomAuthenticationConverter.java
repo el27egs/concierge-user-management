@@ -32,6 +32,8 @@ public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAut
   @Override
   public AbstractAuthenticationToken convert(@Nullable Jwt jwt) {
 
+    log.error("CustomAuthenticationConverter getting roles");
+
     if (Objects.isNull(jwt)) {
       log.error("JWT argument is NULL");
       throw new IllegalArgumentException("JWT cannot be NULL");
@@ -46,13 +48,40 @@ public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAut
 
     Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
-    grantedAuthorities.addAll(getRoles(jwt));
+    grantedAuthorities.addAll(getRealmAccessRoles(jwt));
+    grantedAuthorities.addAll(getResourceAccessRoles(jwt));
     grantedAuthorities.addAll(getScopes(jwt));
 
+    log.info("\n\n\n\ngrantedAuthorities {}\n\n\n\n", grantedAuthorities);
     return grantedAuthorities;
   }
 
-  public List<SimpleGrantedAuthority> getRoles(Jwt jwt) {
+  public List<SimpleGrantedAuthority> getResourceAccessRoles(Jwt jwt) {
+
+    Map<String, Object> resourceAccess =
+        (Map<String, Object>) jwt.getClaims().get("resource_access");
+
+    if (resourceAccess == null || resourceAccess.isEmpty()) {
+      log.error("JWT does not contains resource_access claim");
+      return new ArrayList<>();
+    }
+
+    Map<String, Object> conciergeGrants =
+        (Map<String, Object>) resourceAccess.get("concierge-grants");
+
+    if (conciergeGrants == null || conciergeGrants.isEmpty()) {
+      log.error("JWT does not contains concierge-grants claim");
+      return new ArrayList<>();
+    }
+
+    return ((List<String>) conciergeGrants.get("roles"))
+        .stream()
+            .map(roleName -> "ROLE_" + roleName)
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+  }
+
+  public List<SimpleGrantedAuthority> getRealmAccessRoles(Jwt jwt) {
 
     Map<String, Object> realmAccess = (Map<String, Object>) jwt.getClaims().get("realm_access");
 
