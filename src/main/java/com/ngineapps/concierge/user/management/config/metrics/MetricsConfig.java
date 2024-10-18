@@ -35,7 +35,9 @@ public class MetricsConfig {
     this.properties = properties;
   }
 
-  /** @return Adds prefix to metrics. */
+  /**
+   * @return Adds prefix to metrics.
+   */
   @Bean
   public MeterRegistryCustomizer<MeterRegistry> commonTags() {
 

@@ -32,7 +32,7 @@ public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAut
   @Override
   public AbstractAuthenticationToken convert(@Nullable Jwt jwt) {
 
-    log.error("CustomAuthenticationConverter getting roles");
+    log.info("CustomAuthenticationConverter getting roles");
 
     if (Objects.isNull(jwt)) {
       log.error("JWT argument is NULL");
@@ -52,7 +52,7 @@ public class CustomAuthenticationConverter implements Converter<Jwt, AbstractAut
     grantedAuthorities.addAll(getResourceAccessRoles(jwt));
     grantedAuthorities.addAll(getScopes(jwt));
 
-    log.info("\n\n\n\ngrantedAuthorities {}\n\n\n\n", grantedAuthorities);
+    log.info("\nGrantedAuthorities {}\n", grantedAuthorities);
     return grantedAuthorities;
   }
 

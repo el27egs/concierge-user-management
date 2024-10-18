@@ -121,6 +121,10 @@ management:
         enabled: true
     metrics:
       enabled: true
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
 
 info:
   application:

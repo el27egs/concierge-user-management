@@ -15,44 +15,43 @@
  */
 package com.ngineapps.concierge.user.management.config.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 // @EnableWebSecurity  // @Configuration is ok, this one throws an exception, do not use it
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests(
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http.cors(cors -> cors.disable())
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(
             authorize ->
                 authorize
-                    .mvcMatchers("/actuator/**")
+                    .requestMatchers("/actuator/**")
                     .permitAll()
-                    .mvcMatchers("/api/v1/users/**")
+                    .requestMatchers("/api/v1/users/**")
                     .authenticated()
-                    .mvcMatchers("/api/v1/locations/**")
+                    .requestMatchers("/api/v1/locations/**")
                     .authenticated()
                     .anyRequest()
                     .authenticated())
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .cors()
-        .and()
-        .csrf()
-        .disable()
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .oauth2ResourceServer(
             oauth2 ->
                 oauth2.jwt(
                     jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter())))
-        .headers()
-        .xssProtection()
-        .and()
-        .contentSecurityPolicy("script-src 'self'");
+        .headers(
+            headers ->
+                headers
+                    .xssProtection(xss -> xss.disable())
+                    .contentSecurityPolicy(cps -> cps.policyDirectives("script-src 'self'")))
+        .build();
   }
 }

@@ -15,9 +15,8 @@
  */
 package com.ngineapps.concierge.user.management.model;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
 import java.util.List;
-import javax.persistence.*;
 import lombok.*;
 
 @Entity
@@ -43,7 +42,7 @@ public class Location {
   private String address;
 
   @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
-  List<User> users = new ArrayList<>();
+  List<User> users;
 
   @OneToMany(
       mappedBy = "location",

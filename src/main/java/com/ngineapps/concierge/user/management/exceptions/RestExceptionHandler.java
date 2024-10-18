@@ -23,6 +23,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -71,6 +72,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         "El recurso solicitado no está disponible en este momento. Valide los datos de la solicitud de entrada.";
     final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
     apiError.setMessage(message);
+    apiError.setDetailedMessage(exceptionMessage);
     return this.buildResponseEntity(apiError);
   }
 
@@ -112,10 +114,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
-      final HttpMessageNotReadableException ex,
-      final HttpHeaders headers,
-      final HttpStatus status,
-      final WebRequest request) {
+      HttpMessageNotReadableException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
     String exceptionMessage = ex.getMessage();
     log.error("Exception message: {} ", exceptionMessage);
     final String message =
@@ -127,10 +129,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      final MethodArgumentNotValidException ex,
-      final HttpHeaders headers,
-      final HttpStatus status,
-      final WebRequest request) {
+      MethodArgumentNotValidException ex,
+      HttpHeaders headers,
+      HttpStatusCode status,
+      WebRequest request) {
     final Map<String, String> errors = new HashMap<>();
     String exceptionMessage = ex.getMessage();
     log.error("Exception message: {} ", exceptionMessage);

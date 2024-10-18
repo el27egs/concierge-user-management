@@ -33,6 +33,7 @@ public class ApiError implements Serializable {
   private String debugMessage;
 
   private String message;
+  private String detailedMessage;
   private HttpStatus status;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")

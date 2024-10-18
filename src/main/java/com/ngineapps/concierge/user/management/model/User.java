@@ -15,9 +15,8 @@
  */
 package com.ngineapps.concierge.user.management.model;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
 import java.util.List;
-import javax.persistence.*;
 import lombok.*;
 
 @Entity
@@ -54,5 +53,5 @@ public class User {
       name = "users_locations",
       joinColumns = {@JoinColumn(name = "user_id")},
       inverseJoinColumns = {@JoinColumn(name = "location_id")})
-  List<Location> locations = new ArrayList<>();
+  List<Location> locations;
 }
